@@ -1,0 +1,124 @@
+# 依赖目录
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# 本地环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 构建输出目录
+dist/
+build/
+out/
+.next/
+.nuxt/
+
+# 缓存目录
+.cache/
+.turbo/
+
+# 运行时数据
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# 日志文件
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# 代码覆盖率目录
+coverage/
+.nyc_output/
+
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 编辑器/IDE 文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 包管理器特定文件
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+shrinkwrap.yaml
+node_modules/
+
+# TypeScript 编译输出
+*.tsbuildinfo
+
+# 测试相关
+.jest/
+
+# 安全文件
+*.pem
+*.key
+
+# 调试文件
+debug/
+*.debug
+
+# 临时文件
+tmp/
+temp/
+
+# 其他
+*.backup
+*.bak
+
+# 可执行文件
+*.exe
+*.out
+*.app
+
+# 文档生成器输出
+docs/api/
+docs/_site/
+_site/
+
+# 部署相关
+.dockerignore
+docker-compose.*.yml
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# ESLint/Babel/TypeScript 缓存
+.eslintcache
+.babel-cache/
+
+# 可选：如果你使用某些特定的框架或工具
+# Express.js 会话文件
+session/*
+
+# NestJS
+dist/
+
+# TypeORM
+ormconfig.json
+
+# Serverless
+.serverless/
+
+# Firebase
+.firebase/
+firebase-debug.log
