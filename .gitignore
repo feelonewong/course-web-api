@@ -5,6 +5,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# 缓存数据库文件删除
+data/
+
+
 # 本地环境变量文件
 .env
 .env.local
