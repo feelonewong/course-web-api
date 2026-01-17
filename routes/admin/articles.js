@@ -88,15 +88,16 @@ router.get("/:id", async function (req, res) {
 router.post("/", async function (req, res) {
   try {
     // 筛选条件
-    const { title, content } = req.body;
 
-    if (!title) {
-      res.json({
-        status: 200,
-        data: "标题不能为空",
-      });
-    }
-    const body = filterBody(req)
+    const body = filterBody(req);
+
+    // 条件判断增加在模型中
+    // if (!body.title) {
+    //   return res.status(400).json({
+    //     status: false,
+    //     data: "标题不能为空",
+    //   });
+    // }
     const articles = await Article.create(body);
     res.json({
       status: 200,
@@ -106,11 +107,21 @@ router.post("/", async function (req, res) {
       },
     });
   } catch (error) {
-    res.json({
-      status: 500,
-      message: "数据查询失败",
-      errors: [error.message],
-    });
+    if (error.name === "SequelizeValidationError") {
+      res.json({
+        status: 500,
+        message: "数据查询失败",
+        errors: error.errors.map((item) => {
+          return item.message;
+        }),
+      });
+    } else {
+      res.json({
+        status: 500,
+        message: "数据查询失败",
+        errors: { error },
+      });
+    }
   }
 });
 
@@ -148,7 +159,7 @@ router.put("/:id", async function (req, res) {
     const { id } = req.params;
     const articles = await Article.findByPk(id);
     if (articles) {
-      const body = filterBody(req)
+      const body = filterBody(req);
       await articles.update(body);
 
       res.json({
@@ -171,11 +182,11 @@ router.put("/:id", async function (req, res) {
 });
 
 // 公共方法白名单过滤
-function filterBody(req){
+function filterBody(req) {
   return {
     title: req.body.title,
-    content: req.body.content
-  }
+    content: req.body.content,
+  };
 }
 
 module.exports = router;
