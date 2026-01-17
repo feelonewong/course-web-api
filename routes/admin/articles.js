@@ -1,14 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const { Article } = require("../../models");
-
+const { Op } = require("sequelize");
 // 查询文章列表 /admin/articles
+// ?title=xx query参数传递
 router.get("/", async function (req, res) {
   try {
     // 筛选条件
+    const query = req.query;
     const condition = {
       order: [["id", "DESC"]],
     };
+
+    // 模糊查询的条件 ?title=xxx
+    if (query.title) {
+      condition.where = {
+        title: {
+          [Op.like]: `%${query.title}%`,
+        },
+      };
+    }
+
     const articles = await Article.findAll(condition);
     res.json({
       status: 200,
@@ -140,4 +152,5 @@ router.put("/:id", async function (req, res) {
     });
   }
 });
+
 module.exports = router;
