@@ -112,4 +112,32 @@ router.delete("/:id", async function (req, res) {
     });
   }
 });
+
+// 更新文章 /admin/articles/:id
+router.put("/:id", async function (req, res) {
+  try {
+    // 先查询数据 如果查不到数据就不更新
+    const { id } = req.params;
+    const articles = await Article.findByPk(id);
+    if (articles) {
+      await articles.update(req.body);
+
+      res.json({
+        status: true,
+        message: "文章更新成功",
+      });
+    } else {
+      res.status(404).json({
+        status: false,
+        message: "文章未找到",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "数据查询失败",
+      errors: [error.message],
+    });
+  }
+});
 module.exports = router;
