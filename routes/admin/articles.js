@@ -29,12 +29,17 @@ router.get("/", async function (req, res) {
       };
     }
 
-    const articles = await Article.findAll(condition);
+    const articles = await Article.findAndCountAll(condition);
     res.json({
       status: 200,
       message: "数据查询成功",
       data: {
-        articles,
+        articles: articles.rows,
+        pagination: {
+          total: articles.count,
+          currentPage,
+          pageSize,
+        },
       },
     });
   } catch (error) {
@@ -83,13 +88,16 @@ router.get("/:id", async function (req, res) {
 router.post("/", async function (req, res) {
   try {
     // 筛选条件
-    if (!req.body.title) {
+    const { title, content } = req.body;
+
+    if (!title) {
       res.json({
         status: 200,
         data: "标题不能为空",
       });
     }
-    const articles = await Article.create(req.body);
+    const body = filterBody(req)
+    const articles = await Article.create(body);
     res.json({
       status: 200,
       message: "文章创建成功",
@@ -140,7 +148,8 @@ router.put("/:id", async function (req, res) {
     const { id } = req.params;
     const articles = await Article.findByPk(id);
     if (articles) {
-      await articles.update(req.body);
+      const body = filterBody(req)
+      await articles.update(body);
 
       res.json({
         status: true,
@@ -160,5 +169,13 @@ router.put("/:id", async function (req, res) {
     });
   }
 });
+
+// 公共方法白名单过滤
+function filterBody(req){
+  return {
+    title: req.body.title,
+    content: req.body.content
+  }
+}
 
 module.exports = router;
