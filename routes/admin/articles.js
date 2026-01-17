@@ -8,9 +8,17 @@ router.get("/", async function (req, res) {
   try {
     // 筛选条件
     const query = req.query;
+    // currentPage & pageSize
+    const currentPage = Math.abs(Number(query.currentPage)) || 1;
+    const pageSize = Math.abs(Number(query.pageSize)) || 10;
+    const offset = (currentPage - 1) * pageSize;
+
     const condition = {
       order: [["id", "DESC"]],
+      offset: offset,
+      limit: pageSize,
     };
+    console.log("currentPage", currentPage, "limit", pageSize);
 
     // 模糊查询的条件 ?title=xxx
     if (query.title) {
