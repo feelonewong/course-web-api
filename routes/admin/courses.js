@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { Courses } = require("../../models");
 const { Op } = require("sequelize");
 const { NotFoundError, success, failure } = require("../../utils/response");
 const { Course, Category, User } = require("../../models");
@@ -9,64 +8,43 @@ const { Course, Category, User } = require("../../models");
 // ?title=xx query参数传递
 router.get("/", async function (req, res) {
   try {
-    // 筛选条件
     const query = req.query;
-    // currentPage & pageSize
     const currentPage = Math.abs(Number(query.currentPage)) || 1;
     const pageSize = Math.abs(Number(query.pageSize)) || 10;
     const offset = (currentPage - 1) * pageSize;
 
     const condition = {
       ...getCondition(),
+      where: {},
       order: [["id", "DESC"]],
       limit: pageSize,
       offset: offset,
     };
 
-    // 模糊查询的条件 ?title=xxx
     if (query.categoryId) {
-      condition.where = {
-        categoryId: {
-          [Op.eq]: query.categoryId,
-        },
-      };
+      condition.where.categoryId = query.categoryId;
     }
 
     if (query.userId) {
-      condition.where = {
-        userId: {
-          [Op.eq]: query.userId,
-        },
-      };
+      condition.where.userId = query.userId;
     }
 
     if (query.name) {
-      condition.where = {
-        name: {
-          [Op.like]: `%${query.name}%`,
-        },
+      condition.where.name = {
+        [Op.like]: `%${query.name}%`,
       };
     }
 
     if (query.recommended) {
-      condition.where = {
-        recommended: {
-          // 需要转布尔值
-          [Op.eq]: query.recommended === "true",
-        },
-      };
+      condition.where.recommended = query.recommended === "true";
     }
 
     if (query.introductory) {
-      condition.where = {
-        introductory: {
-          [Op.eq]: query.introductory === "true",
-        },
-      };
+      condition.where.introductory = query.introductory === "true";
     }
 
-    const { rows, count } = await Courses.findAndCountAll(condition);
-    success(res, "查询文章列表成功。", {
+    const { count, rows } = await Course.findAndCountAll(condition);
+    success(res, "查询课程列表成功。", {
       courses: rows,
       pagination: {
         total: count,
@@ -83,7 +61,7 @@ router.get("/", async function (req, res) {
 router.get("/:id", async function (req, res) {
   try {
     // 筛选条件
-    const courses = await getCourses(req);
+    const courses = await getCourse(req);
     success(res, "查询文章成功。", { courses });
   } catch (error) {
     failure(res, error);
@@ -97,7 +75,7 @@ router.post("/", async function (req, res) {
 
     const body = filterBody(req);
 
-    const courses = await Courses.create(body);
+    const courses = await Course.create(body);
 
     success(res, "创建文章成功。", { courses }, 201);
   } catch (error) {
@@ -108,7 +86,7 @@ router.post("/", async function (req, res) {
 // 删除 /admin/courses/:id
 router.delete("/:id", async function (req, res) {
   try {
-    const courses = await getCourses(req);
+    const courses = await getCourse(req);
 
     await courses.destroy();
     success(res, "删除文章成功。");
@@ -122,9 +100,9 @@ router.put("/:id", async function (req, res) {
   try {
     // 先查询数据 如果查不到数据就不更新
     // const { id } = req.params;
-    // const courses = await Courses.findByPk(id);
+    // const courses = await Course.findByPk(id);
 
-    const courses = await getCourses(req);
+    const courses = await getCourse(req);
     const body = filterBody(req);
     await courses.update(body);
 
@@ -177,7 +155,7 @@ function getCondition() {
 /**
  * 公共方法：查询当前课程
  */
-async function getCourses(req) {
+async function getCourse(req) {
   const { id } = req.params;
   const condition = getCondition();
 
