@@ -73,3 +73,29 @@ id（编号）: integer，主键，不为null，无符号，自增
 name（项目名称）：varchar
 icp（备案号）：varchar
 copyright（版权信息）：varchar
+
+1. 生成种子文件
+```
+sequelize seed:generate --name setting
+```
+2. 修改seeder/setting.js 文件内容(用于填充数据)
+```
+async up(queryInterface, Sequelize) {
+  await queryInterface.bulkInsert('Settings', [{
+    name: 'Couse web api',
+    icp: '鄂ICP备13016268号-11',
+    copyright: '© 2013 Changle Weiyang Inc. All Rights Reserved.',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }], {});
+},
+
+async down(queryInterface, Sequelize) {
+  await queryInterface.bulkDelete('Settings', null, {});
+}
+```
+
+3. 运行种子文件
+```
+sequelize db:seed --seed 20260118140533-setting
+```
