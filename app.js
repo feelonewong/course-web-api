@@ -2,11 +2,14 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const adminCategoriesRouter = require('./routes/admin/categories');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const articleRouter = require('./routes/admin/articles')
 const app = express();
+
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -17,5 +20,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin/articles', articleRouter);
+app.use('/admin/categories', adminCategoriesRouter);
 
 module.exports = app;
