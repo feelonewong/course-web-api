@@ -1,27 +1,27 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const articleRouter = require('./routes/admin/articles')
-const adminCategoriesRouter = require('./routes/admin/categories');
-const adminSettingsRouter = require('./routes/admin/settings')
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const articleRouter = require("./routes/admin/articles");
+const adminCategoriesRouter = require("./routes/admin/categories");
+const adminSettingsRouter = require("./routes/admin/settings");
+const adminUserRouter = require("./routes/admin/user");
 const app = express();
 
-
-
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/admin/articles', articleRouter);
-app.use('/admin/categories', adminCategoriesRouter);
-app.use('/admin/settings', adminSettingsRouter);
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+app.use("/admin/articles", articleRouter);
+app.use("/admin/categories", adminCategoriesRouter);
+app.use("/admin/settings", adminSettingsRouter);
+app.use("/admin/user", adminUserRouter);
 
 module.exports = app;
