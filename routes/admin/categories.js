@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { Category } = require("../../models");
 const { Op } = require("sequelize");
 const { NotFoundError, success, failure } = require("../../utils/response");
+const { Category, Course } = require("../../models");
 // 查询分类列表 /admin/categories
 // ?name=xx query参数传递
 router.get("/", async function (req, res) {
@@ -72,9 +72,14 @@ router.post("/", async function (req, res) {
 // 删除 /admin/categories/:id
 router.delete("/:id", async function (req, res) {
   try {
-    const categories = await getCategory(req);
+    const category = await getCategory(req);
 
-    await categories.destroy();
+    const count = await Course.count({ where: { categoryId: req.params.id } });
+    if (count > 0) {
+      throw new Error("当前分类有课程，无法删除。");
+    }
+
+    await category.destroy();
     success(res, "删除分类成功。");
   } catch (error) {
     failure(res, error);
@@ -106,18 +111,26 @@ function filterBody(req) {
   };
 }
 
+/**
+ * 公共方法：查询当前分类
+ */
 async function getCategory(req) {
-  // 获取分类id
   const { id } = req.params;
+  const condition = {
+    include: [
+      {
+        model: Course,
+        as: "courses",
+      },
+    ],
+  };
 
-  // 查询当前分类
-  const article = await Category.findByPk(id);
-
-  // 如果没找到就会抛出异常
-  if (!article) {
-    throw new NotFoundError(`ID: ${id}的分类未找到`);
+  const category = await Category.findByPk(id, condition);
+  if (!category) {
+    throw new NotFoundError(`ID: ${id}的分类未找到。`);
   }
-  return article;
+
+  return category;
 }
 
 module.exports = router;

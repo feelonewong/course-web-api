@@ -9,6 +9,8 @@ const articleRouter = require("./routes/admin/articles");
 const adminCategoriesRouter = require("./routes/admin/categories");
 const adminSettingsRouter = require("./routes/admin/settings");
 const adminUserRouter = require("./routes/admin/user");
+const adminCourseRouter = require("./routes/admin/courses");
+
 const app = express();
 
 app.use(logger("dev"));
@@ -23,5 +25,6 @@ app.use("/admin/articles", articleRouter);
 app.use("/admin/categories", adminCategoriesRouter);
 app.use("/admin/settings", adminSettingsRouter);
 app.use("/admin/user", adminUserRouter);
+app.use("/admin/course", adminCourseRouter);
 
 module.exports = app;
